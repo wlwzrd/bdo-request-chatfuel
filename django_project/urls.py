@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name="index"),
     url(r'^api/v1.0/vehiculos/',views.getCarFee, name="getFee"),
+    url(r'^api/v1.0/bot/', views.getReceipt, name="getReceipt"),
 ]
