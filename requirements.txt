@@ -21,7 +21,7 @@ psutil==3.4.2
 psycopg2==2.6.1
 pyasn1==0.1.9
 PyICU==1.9.2
-pyOpenSSL==0.15.1
+pyOpenSSL==17.5.0
 pyRFC3339==1.0
 python2-pythondialog==3.3.0
 pytz==2014.10
