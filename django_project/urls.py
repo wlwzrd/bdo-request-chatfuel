@@ -15,14 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from botov.views import index, getCarFee, getReceipt, getCurrentTime
+from botov.views import index, getCarFee, getCurrentTime
 from store.views import createCustomer, getOrderStatus, getPreviousOrder
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', index, name="index"),
     url(r'^api/v1.0/vehiculos/',getCarFee, name="getFee"),
-    url(r'^api/v1.0/bot/', getReceipt, name="getReceipt"),
     url(r'^api/v1.0/bot/', getCurrentTime, name="getCurrentTime"),
     url(r'^api/v2.0/store/create_customer/',createCustomer, name="createCustomer"),
     url(r'^api/v2.0/store/get_order_status/',getOrderStatus, name="getOrderStatus"),
