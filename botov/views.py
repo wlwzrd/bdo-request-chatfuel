@@ -35,7 +35,7 @@ def call_service_get(image_url):
     auth=(api_key, api_secret))
         return response
 
-def callService(img_url):
+def callServiceTag(img_url):
         url = "https://api.imagga.com/v2/tags"
         querystring = {"image_url":img_url, "version":"2"}
         headers = {
@@ -45,6 +45,25 @@ def callService(img_url):
         response = requests.request("GET", url, headers=headers, params=querystring)
         return response
 
+def callServiceCategorization(img_url):
+        url = "https://api.imagga.com/v2/categories/personal_photos"
+        querystring = {"image_url":img_url}
+        headers = {
+        'accept': "application/json",
+        'authorization': "Basic YWNjXzg0ZDk0MDg5NjdkNTM3OTo3MDY1NjAwNzNhMDRjYzFhM2UyZWMzY2Y3YWFkNWQ3Nw=="
+        }
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        return response
+
+def callServiceClassification(img_url):
+        url = "https://api.imagga.com/v2/categories/nsfw_beta"
+        querystring = {"image_url":img_url}
+        headers = {
+        'accept': "application/json",
+        'authorization': "Basic YWNjXzg0ZDk0MDg5NjdkNTM3OTo3MDY1NjAwNzNhMDRjYzFhM2UyZWMzY2Y3YWFkNWQ3Nw=="
+        }
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        return response
 
 def getTags(recognition):
         words = ""
@@ -52,13 +71,57 @@ def getTags(recognition):
                 words = words + recognition.json()["result"]["tags"][i]["tag"]["en"] + ", "
         return words
 
-#@csrf_exempt
+def getCategory(categorization):
+        word = ""
+        word = categorization.json()["result"]["categories"][0]["name"]["en"]
+        return word
+
+def getClassification(classification):
+        text = {"safe":"Completely safe images", "underwear":"Content such as lingerie, underwear and pants", "nsfw":"Porn images, nudes and body parts"}
+        classified = classification.json()["result"]["categories"][0]["name"]["en"]
+        return text[classified]
+
 def getImageRecognition(request):
+        image_url = request.GET.get("image_url")
+        json_data={}
+        data = []
+        message1 = {}
+        message2 = {}
+        message3 = {}
+        tags = callServiceTag(image_url)
+        categorization = callServiceCategorization(image_url)
+        classification = callServiceClassification(image_url)
+
+        statusTags = tags.json()["status"]["type"]
+        if statusTags == "success":
+                message1["text"] = "Tagged as: [ " + getTags(tags) + "]"
+        else:
+                message1["text"] = "Error: Unable to find tags"
+        data.append(message1)
+        statusCategorization =  categorization.json()["status"]["type"]
+        if statusCategorization == "success":
+                message2["text"] = "Categorized as: " + getCategory(categorization) + "."
+        else:
+                message2["text"] = "Error: Unable to find categories"
+        data.append(message2)
+        statusClassification =  classification.json()["status"]["type"]
+        print statusClassification
+        if statusClassification == "success":
+                message3["text"] = "Classified as: " + getClassification(classification) + "."
+        else:
+                message3["text"] = "Error: Unable to classified"
+        data.append(message3)
+        json_data["messages"] = data
+        #return json_data
+        return HttpResponse(json.dumps(json_data, indent=4), content_type="application/json")
+
+#@csrf_exempt
+def getImageRecognitionF(request):
         #image =  request.body
         #image_url = json.loads(image)["image_url"]
         #image_path = download_image(img_url)
         image_url = request.GET.get("image_url")
-        recognition = callService(image_url)
+        recognition = callServiceTag(image_url)
         status = recognition.json()["status"]["type"]
         json_data = {}
         text = {}
