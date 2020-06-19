@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from botov.views import index, getCarFee, getCurrentTime
+from botov.views import index, getCarFee, getCurrentTime, getImageRecognition
 from store.views import createCustomer, getOrderStatus, getPreviousOrder
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', index, name="index"),
     url(r'^api/v1.0/vehiculos/',getCarFee, name="getFee"),
     url(r'^api/v1.0/bot/', getCurrentTime, name="getCurrentTime"),
+    url(r'^api/v1.0/image/', getImageRecognition, name="getImageRecognition"),
     url(r'^api/v2.0/store/create_customer/',createCustomer, name="createCustomer"),
     url(r'^api/v2.0/store/get_order_status/',getOrderStatus, name="getOrderStatus"),
     url(r'^api/v2.0/store/get_previous_order/',getPreviousOrder, name="getPreviousOrder"),
